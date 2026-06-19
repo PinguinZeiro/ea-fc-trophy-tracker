@@ -1,0 +1,230 @@
+Absolutely, Roberto. Here's a complete **EA FC 26 Trophy Tracker** website that:
+
+✅ Tracks trophies for multiple competitions
+✅ Lets you increase/decrease trophy counts
+✅ Automatically saves everything in your browser using `localStorage` so it stays after closing the page ([developer.mozilla.org][1])
+✅ Shows total trophies won
+✅ Has a modern dark-theme design
+
+Save this as **index.html** and open it in your browser:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EA FC 26 Trophy Tracker</title>
+
+<style>
+    *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+        font-family:Arial, Helvetica, sans-serif;
+    }
+
+    body{
+        background:#121212;
+        color:white;
+        padding:30px;
+    }
+
+    h1{
+        text-align:center;
+        margin-bottom:20px;
+    }
+
+    .total{
+        text-align:center;
+        font-size:1.5rem;
+        margin-bottom:30px;
+        color:gold;
+    }
+
+    .container{
+        max-width:800px;
+        margin:auto;
+    }
+
+    .trophy{
+        background:#1f1f1f;
+        padding:15px;
+        border-radius:12px;
+        margin-bottom:12px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+    }
+
+    .name{
+        font-size:1.1rem;
+        font-weight:bold;
+    }
+
+    .controls{
+        display:flex;
+        align-items:center;
+        gap:10px;
+    }
+
+    button{
+        width:35px;
+        height:35px;
+        border:none;
+        border-radius:8px;
+        cursor:pointer;
+        font-size:18px;
+        font-weight:bold;
+    }
+
+    .plus{
+        background:#28a745;
+        color:white;
+    }
+
+    .minus{
+        background:#dc3545;
+        color:white;
+    }
+
+    .count{
+        width:40px;
+        text-align:center;
+        font-size:20px;
+    }
+
+    .reset{
+        display:block;
+        margin:25px auto;
+        padding:12px 20px;
+        background:#ff9800;
+        color:white;
+        border:none;
+        border-radius:10px;
+        cursor:pointer;
+        font-size:16px;
+    }
+</style>
+</head>
+<body>
+
+<h1>🏆 EA FC 26 Trophy Tracker</h1>
+
+<div class="total">
+    Total Trophies: <span id="total">0</span>
+</div>
+
+<div class="container" id="tracker"></div>
+
+<button class="reset" onclick="resetAll()">
+    Reset Everything
+</button>
+
+<script>
+
+const competitions = [
+    "Premier League",
+    "Champions League",
+    "Europa League",
+    "Conference League",
+    "FA Cup",
+    "Carabao Cup",
+    "Community Shield",
+    "Super Cup",
+    "Club World Cup",
+    "World Cup",
+    "European Championship"
+];
+
+let trophies = JSON.parse(localStorage.getItem("ea_fc26_trophies")) || {};
+
+competitions.forEach(comp => {
+    if(trophies[comp] === undefined){
+        trophies[comp] = 0;
+    }
+});
+
+const tracker = document.getElementById("tracker");
+
+function render(){
+
+    tracker.innerHTML = "";
+
+    let total = 0;
+
+    competitions.forEach(comp => {
+
+        total += trophies[comp];
+
+        tracker.innerHTML += `
+            <div class="trophy">
+                <div class="name">${comp}</div>
+
+                <div class="controls">
+                    <button class="minus"
+                        onclick="changeTrophy('${comp}',-1)">
+                        -
+                    </button>
+
+                    <div class="count">
+                        ${trophies[comp]}
+                    </div>
+
+                    <button class="plus"
+                        onclick="changeTrophy('${comp}',1)">
+                        +
+                    </button>
+                </div>
+            </div>
+        `;
+    });
+
+    document.getElementById("total").textContent = total;
+
+    localStorage.setItem(
+        "ea_fc26_trophies",
+        JSON.stringify(trophies)
+    );
+}
+
+function changeTrophy(comp, amount){
+
+    trophies[comp] += amount;
+
+    if(trophies[comp] < 0){
+        trophies[comp] = 0;
+    }
+
+    render();
+}
+
+function resetAll(){
+
+    if(confirm("Reset all trophies?")){
+        competitions.forEach(comp => {
+            trophies[comp] = 0;
+        });
+
+        render();
+    }
+}
+
+render();
+
+</script>
+
+</body>
+</html>
+```
+
+If you want, I can also make a **Career Mode version** with:
+
+* Multiple clubs/seasons
+* Manager career history
+* Top scorers
+* Transfer records
+* Trophy cabinet with actual competition logos
+* Export/import saves to a file.
+
+[1]: https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API?utm_source=chatgpt.com "Using the Web Storage API - Web APIs | MDN"
